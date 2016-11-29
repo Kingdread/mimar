@@ -1,0 +1,89 @@
+define LDC 0x0
+IR -> Accu
+
+define LDV 0x1
+IR -> SAR; R = 1
+R = 1
+R = 1
+SDR -> Accu
+
+define STV 0x2
+Accu -> SDR
+IR -> SAR; W = 1
+W = 1
+W = 1
+
+define ADD 0x3
+IR -> SAR; R = 1
+Accu -> X; R = 1
+R = 1
+SDR -> Y
+ALU 001
+Z -> Accu
+
+define AND 0x4
+IR -> SAR; R = 1
+Accu -> X; R = 1
+R = 1
+SDR -> Y
+ALU 011
+Z -> Accu
+
+define OR 0x5
+IR -> SAR; R = 1
+Accu -> X; R = 1
+R = 1
+SDR -> Y
+ALU 100
+Z -> Accu
+
+define XOR 0x6
+IR -> SAR; R = 1
+Accu -> X; R = 1
+R = 1
+SDR -> Y
+ALU 101
+Z -> Accu
+
+define EQL 0x7
+IR -> SAR; R = 1
+Accu -> X; R = 1
+R = 1
+SDR -> Y
+ALU 111
+Z -> Accu
+
+define JMP 0x8
+IR -> IAR
+
+define JMN 0x9
+
+define LDIV 0xA
+IR -> SAR; R = 1
+R = 1
+R = 1
+SDR -> SAR; R = 1
+R = 1
+R = 1
+SDR -> Accu
+
+define STIV 0xB
+IR -> SAR; R = 1
+R = 1
+R = 1
+SDR -> SAR
+Accu -> SDR; W = 1
+W = 1
+W = 1
+
+define HALT 0xF0
+
+define NOT 0xF1
+Accu -> X
+ALU 110
+Z -> Accu
+
+define RAR 0xF2
+Accu -> X
+ALU 010
+Z -> Accu

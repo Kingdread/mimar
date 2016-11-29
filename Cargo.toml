@@ -1,0 +1,10 @@
+[package]
+name = "mimar"
+version = "0.1.0"
+authors = ["Daniel Schadt <kingdread@gmx.de>"]
+
+[dependencies]
+regex = "0.1"
+lazy_static = "0.2.2"
+docopt = "0.6"
+rustc-serialize = "0.3"
