@@ -1,6 +1,7 @@
 //! The MIMA firmware compiler is responsible for taking a firmware description
 //! in register transfer notation (described below) and outputs a compiled
-//! firmware (also described below).
+//! firmware (also described below). The compiled firmware can be used in
+//! [`mimar-sim`](../mimar_sim/index.html).
 //!
 //! # What the firmware does
 //!
@@ -76,6 +77,12 @@
 //! | `0xF0` | HALT     |
 //! | `0xF1` | NOT      |
 //! | `0xF2` | RAR      |
+//!
+//! You can generate and compile the default firmware in a single line:
+//!
+//! ```bash
+//! mimar-fwc --default | mimar-fwc -o default.mimafw
+//! ```
 //!
 //! # Peculiarities
 //!

@@ -1,3 +1,24 @@
+//! The MIMA simulator.
+//!
+//! The simulator needs a firmware and a program to simulate. You can generate a
+//! firmware with [`mimar-fwc`](../mimar_fwc/index.html).
+//!
+//! The default firmware is compatible with the output of cbdevnet's
+//! [mimasm](https://github.com/cbdevnet/mima).
+//!
+//! The simulator will simulate the program starting at the given address
+//! (defaulting to 0). At the end, all named cells are output.
+//!
+//! # Example usage
+//!
+//! ```bash
+//! # simple simulation
+//! mimar-sim default.mimafw program.mima
+//! # start at the given address
+//! mimar-sim -s 0x100 default.mimafw program.mima
+//! # start at the given label
+//! mimar-sim -s START default.mimafw program.mima
+//! ```
 extern crate mimar;
 extern crate rustc_serialize;
 extern crate docopt;
