@@ -9,6 +9,13 @@
 //! The simulator will simulate the program starting at the given address
 //! (defaulting to 0). At the end, all named cells are output.
 //!
+//! # Temporary memory changes
+//!
+//! You can modify single memory cells before the program starts. This is useful
+//! e.g. for input. Use the `-m` parameter for this, with the syntax `-m
+//! target=value`, where `target` can be an address (either decimal or
+//! hexadecimal) or a label. You can give multiple `-m` options.
+//!
 //! # Example usage
 //!
 //! ```bash
@@ -18,6 +25,8 @@
 //! mimar-sim -s 0x100 default.mimafw program.mima
 //! # start at the given label
 //! mimar-sim -s START default.mimafw program.mima
+//! # pass a parameter to the label NUMBER
+//! mimar-sim -m NUMBER=10 default.mimafw program.mima
 //! ```
 extern crate mimar;
 extern crate rustc_serialize;
@@ -59,19 +68,23 @@ const USAGE: &'static str = "
 MIMA simulator.
 
 Usage:
-  mimar-sim [-s <loc>] <firmware> <input>
+  mimar-sim [-s <loc>] [-m <memstr>]... <firmware> <input>
   mimar-sim -h | --help
 
 Options:
   firmware                  Firmware file (compiled with mimar-fwc)
   input                     Program to execute (assembled with mimar-asm)
   -s <loc>, --start <loc>   Start location, given as number or label.
+  -m <memstr>               Set a memory location. memstr should look like
+                            address=value, where address can be a label. Can
+                            be specified multiple times.
   -h --help                 Show this screen.
 ";
 
 #[derive(Debug, RustcDecodable)]
 struct Args {
     flag_start: Option<String>,
+    flag_m: Vec<String>,
     arg_firmware: String,
     arg_input: String,
 }
@@ -99,6 +112,26 @@ fn main() {
         println!("Error loading the program: {}", e);
         process::exit(1);
     });
+
+    for memset in &args.flag_m {
+        let mut split = memset.split("=");
+        let target = split.next().unwrap();
+        let target = util::parse_num(target)
+            .map(|v| v as u32)
+            .or_else(|| m.labels.get(target).map(|v| *v as u32))
+            .unwrap_or_else(|| {
+                println!("Can't find cell {}", target);
+                process::exit(1);
+            });
+        let value = util::parse_num(split.next().unwrap_or_else(|| {
+            println!("Expected a value");
+            process::exit(1);
+        })).unwrap_or_else(|| {
+            println!("Malformed value");
+            process::exit(1);
+        });
+        m.memory.insert(target, value as u32);
+    }
 
     if let Some(start) = args.flag_start {
         let num = util::parse_num(&start)
