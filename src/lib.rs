@@ -9,9 +9,11 @@ pub mod masks;
 pub mod util;
 pub mod firmware;
 pub mod registers;
+pub mod logger;
 
 use self::firmware::Firmware;
 use self::registers::Register;
+use self::logger::Logger;
 
 /// State of the MIMA after a cycle completed
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
@@ -160,7 +162,7 @@ impl Mima {
     }
 
     /// Get the memory at the given location
-    pub fn get_memory(&mut self, location: u32) -> u32 {
+    pub fn get_memory(&self, location: u32) -> u32 {
         *self.memory.get(&location).unwrap_or(&0)
     }
 
@@ -172,23 +174,36 @@ impl Mima {
         }
     }
 
+    /// Get all labels pointing to the given location
+    pub fn find_labels(&self, location: u32) -> Vec<&str> {
+        self.labels.iter()
+            .filter(|&(_, adr)| *adr == location)
+            .map(|(label, _)| label as &str)
+            .collect()
+    }
+
     /// Advance the MIMA by a cycle and update the internal state.
-    pub fn cycle(&mut self) -> MimaState {
+    pub fn cycle<L: Logger>(&mut self, log: &L) -> MimaState {
         self.cycle_count += 1;
         // The decoding phase is hard-coded
         if self.next_instruction == 0xFF {
             let ir = self.registers[&Register::IR];
-            println!("  IR: {:#x}", ir);
             let mut opcode = (ir & masks::OPCODE) >> masks::OPCODE_SHIFT;
             if opcode == 0xF {
                 opcode = (ir & masks::EXTENDED) >> masks::EXTENDED_SHIFT;
             }
-            println!("OpCode {:#x} Param: {:#x}", opcode, ir & masks::ADDRESS_MASK);
             let instruction = match self.firmware.find_instruction(opcode as u8) {
                 Some(i) => i.clone(),
                 None => return MimaState::Error(MimaError::InvalidOpcode),
             };
-            println!("{:?}", instruction);
+            let mut param = ir & masks::ADDRESS_MASK;
+            if instruction.opcode > 0xF {
+                param &= !masks::EXTENDED;
+            }
+            log.log_instruction(&self,
+                                self.registers[&Register::IAR] - 1,
+                                &instruction,
+                                param);
             self.next_instruction = instruction.start;
             // Hard-coded HALT instruction
             if instruction.mnemonic == "HALT" {
@@ -211,12 +226,10 @@ impl Mima {
             let address = self.registers[&Register::SAR];
             let data = self.get_memory(address);
             self.set_register(Register::SDR, data);
-            println!("Memory read, value: {:#x}", data);
         } else if self.rw_bits & masks::MEM_WRITE > 0 && self.memory_timer == 0 {
             let address = self.registers[&Register::SAR];
             let data = self.registers[&Register::SDR];
             self.set_memory(address, data);
-            println!("Memory written");
         }
 
         if self.rw_bits & masks::MEM_ACCESS == instr & masks::MEM_ACCESS  && self.memory_timer > 0 {
