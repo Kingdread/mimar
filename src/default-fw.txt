@@ -76,6 +76,20 @@ Accu -> SDR; W = 1
 W = 1
 W = 1
 
+define JMS 0xC
+IAR -> SDR
+IR -> SAR; W = 1
+IR -> X; W = 1
+One -> Y; W = 1
+ALU add
+Z -> IAR
+
+define JIND 0xD
+IR -> SAR; R = 1
+R = 1
+R = 1
+SDR -> IAR
+
 define HALT 0xF0
 
 define NOT 0xF1
