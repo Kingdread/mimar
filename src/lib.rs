@@ -289,7 +289,7 @@ impl Mima {
     /// Load memory and labels from the given reader.
     ///
     /// The memory and labels will be cleared before.
-    pub fn load<B: BufRead>(&mut self, reader: &mut B) -> Result<(), MimaLoadError> {
+    pub fn load<B: BufRead>(&mut self, reader: B) -> Result<(), MimaLoadError> {
         self.memory.clear();
         self.labels.clear();
         for line in reader.lines() {

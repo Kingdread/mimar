@@ -300,7 +300,7 @@ fn fetch_phase() -> Vec<Microinstruction> {
 }
 
 /// Read the data from the given reader and return the compiled firmware.
-fn compile_firmware<R: BufRead>(reader: &mut R) -> Option<Firmware> {
+fn compile_firmware<R: BufRead>(reader: R) -> Option<Firmware> {
     lazy_static! {
         static ref DEFINE: Regex = Regex::new("^define ([A-Z]+) ((?:(?:0x)|$)?[A-Za-z0-9]+)$").unwrap();
     }

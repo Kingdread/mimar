@@ -88,7 +88,7 @@ impl Firmware {
     }
 
     /// Load the firmware from the given reader.
-    pub fn load<B: BufRead>(reader: &mut B) -> io::Result<Firmware> {
+    pub fn load<B: BufRead>(reader: B) -> io::Result<Firmware> {
         let mut firmware = Firmware::new();
         for line in reader.lines() {
             let line = try!(line);
