@@ -74,6 +74,8 @@
 //! | `0x9`  | JMN      |
 //! | `0xA`  | LDIV     |
 //! | `0xB`  | STIV     |
+//! | `0xC'  | JMS      |
+//! | `0xD`  | JIND     |
 //! | `0xF0` | HALT     |
 //! | `0xF1` | NOT      |
 //! | `0xF2` | RAR      |
