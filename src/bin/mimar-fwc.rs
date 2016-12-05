@@ -205,9 +205,9 @@ impl From<UnknownRegister> for RTError {
 /// Parse a single line of register-transfer-notation.
 fn parse_register_transfer(line: &str) -> Result<Microinstruction, RTError> {
     lazy_static! {
-        static ref TRANSFER: Regex = Regex::new("(\\w+)\\s*->\\s*(\\w+)").unwrap();
-        static ref RW_BIT: Regex = Regex::new("([RrWw])\\s*=\\s*([10])").unwrap();
-        static ref ALU: Regex = Regex::new("ALU ([A-Za-z01]+)").unwrap();
+        static ref TRANSFER: Regex = Regex::new("^(\\w+)\\s*->\\s*(\\w+)$").unwrap();
+        static ref RW_BIT: Regex = Regex::new("^([RrWw])\\s*=\\s*([10])$").unwrap();
+        static ref ALU: Regex = Regex::new("^ALU ([A-Za-z01]+)$").unwrap();
     }
     let parts = line.split(';');
     let mut source: Option<Register> = None;
@@ -302,7 +302,7 @@ fn fetch_phase() -> Vec<Microinstruction> {
 /// Read the data from the given reader and return the compiled firmware.
 fn compile_firmware<R: BufRead>(reader: &mut R) -> Option<Firmware> {
     lazy_static! {
-        static ref DEFINE: Regex = Regex::new("define ([A-Z]+) ((?:(?:0x)|$)?[A-Za-z0-9]+)").unwrap();
+        static ref DEFINE: Regex = Regex::new("^define ([A-Z]+) ((?:(?:0x)|$)?[A-Za-z0-9]+)$").unwrap();
     }
     let mut firmware = Firmware::new();
     let mut memory = fetch_phase();
