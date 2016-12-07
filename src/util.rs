@@ -32,7 +32,7 @@ pub fn parse_num(text: &str) -> Option<i32> {
     };
     for chr in stripped.chars() {
         result *= base;
-        if let Some(d) = chr.to_digit(16) {
+        if let Some(d) = chr.to_digit(base as u32) {
             result += d as i32
         } else {
             return None;
