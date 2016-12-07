@@ -1,3 +1,57 @@
+//! MIMA assembler.
+//!
+//! The MIMA assembler takes input in an assembly-like language and outputs
+//! memory maps suitable for use with [mimar-sim](../mimar_sim/index.html).
+//!
+//! # Assembly format
+//!
+//! The general format is one command per line, where a command looks like `LDC
+//! 0`, where but the argument can be omitted (e.g. `NOT`).
+//!
+//! Lines may be prefixed with a label, which will define a global variable with
+//! the command's location as value, e.g. `LOOP: LDV 0`. Instead of constants as
+//! arguments, you can specify labels, like `JMP LOOP`.
+//!
+//! You can specify where to start blocks with the `*= address`. The
+//! preprocessor can also define constants with `NAME = value`. Note though that
+//! this value is replaced at assemble-time, much like `#define`s in C. The
+//! value is not placed in the storage and can't be accessed from within the
+//! program.
+//!
+//! To initialize a cell to a value, use the special `DS` instruction. This will
+//! just fill the cell with the given constant.
+//!
+//! # Example
+//!
+//! The syntax is best shown with an example:
+//!
+//! ```text
+//! I:     DS 5
+//!        *= $100
+//! START: LDC 1
+//!        ADD I
+//!        HALT
+//! ```
+//!
+//! This program defines a variable I with initial value 5 (or more exact, it
+//! defines the label I to point at a memory cell which is initialized with
+//! value 5). Then, at address 0x100, it places the code to load the constant 1,
+//! add the value of I and halt the machine.
+//!
+//! You can test the program like this (assuming you have the firmware saved as
+//! `firmware`, see [`mimar-fwc`](../mimar_fwc/index.html)):
+//!
+//! ```text
+//! mimar-asm firmware example
+//! mimar-sim firmware out.mima -s START
+//! ```
+//!
+//! # Output format
+//!
+//! The output is a single memory cell per line, in the format `address value`,
+//! where address and value are the hex-encoded address and value. If the
+//! address had a label associated with it, it is placed as a comment after the
+//! line.
 extern crate mimar;
 extern crate rustc_serialize;
 extern crate docopt;

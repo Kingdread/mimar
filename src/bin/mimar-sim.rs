@@ -1,7 +1,8 @@
 //! The MIMA simulator.
 //!
 //! The simulator needs a firmware and a program to simulate. You can generate a
-//! firmware with [`mimar-fwc`](../mimar_fwc/index.html).
+//! firmware with [`mimar-fwc`](../mimar_fwc/index.html) and assemble programs
+//! with [`mimar-asm`](../mimar_asm/index.html).
 //!
 //! The default firmware is compatible with the output of cbdevnet's
 //! [mimasm](https://github.com/cbdevnet/mima).
