@@ -52,6 +52,16 @@ impl Firmware {
         None
     }
 
+    /// Find the instruction with the given mnemonic
+    pub fn find_instruction_by_mnemonic(&self, mnemonic: &str) -> Option<&Instruction> {
+        for instr in &self.instructions {
+            if instr.mnemonic == mnemonic {
+                return Some(instr);
+            }
+        }
+        None
+    }
+
     /// Load memory from a slice.
     ///
     /// It is assumed that the given slice starts at 0x00.
