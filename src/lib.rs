@@ -3,7 +3,8 @@
 //! If you want to programatically simulate a MIMA, you can use the structs and
 //! functions defined here. If you want to use the command line interface, you
 //! should look into the [`mimar-fwc`](../mimar_fwc/index.html) utiltiy for
-//! dealing with firmwares and the [`mimar-sim`](../mimar_sim/index.html)
+//! dealing with firmwares, the [`mimar-asm`](../mimar_asm/index.html) utility
+//! to assemble programs and the [`mimar-sim`](../mimar_sim/index.html)
 //! utility for simulation.
 
 use std::collections::HashMap;
